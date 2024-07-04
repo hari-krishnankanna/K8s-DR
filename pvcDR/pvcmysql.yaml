@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: production
+  name: mysqlfinal-pvm
+spec:
+  capacity:
+    storage: 4Gi
+  storageClassName: default
+  azureDisk:
+    cachingMode: None
+    diskName: mysqldiskfinal
+    diskURI: /subscriptions/c0812314-9889-42e6-8d45-4b13cfa76c0a/resourceGroups/K8s/providers/Microsoft.Compute/disks/mysqldiskfinal
+    kind: Managed
+    fsType: ext4
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  claimRef:
+    name: mysqlfinal-pvc
+    namespace: production
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: production
+  name: mysqlfinal-pvc
+  annotations:
+    volume.beta.kubernetes.io/storage-class: default
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 4Gi
+  storageClassName: default
