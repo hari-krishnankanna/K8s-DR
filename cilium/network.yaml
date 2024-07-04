@@ -1,0 +1,14 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-app1-to-app2
+  namespace: test-network
+spec:
+  endpointSelector:
+    matchLabels:
+      app: app2
+  ingress:
+  - fromEndpoints:
+    - matchLabels:
+        app: app1
+
