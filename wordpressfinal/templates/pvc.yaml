@@ -3,9 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: worpressfinal-pvc
   namespace: production
-  annotations:
-    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.storageClass }}
-  labels:
+    labels:
     app: wordpress
 spec:
   accessModes:
