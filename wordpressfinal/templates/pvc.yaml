@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: worpressfinal-pvc
   namespace: production
-    labels:
+  labels:
     app: wordpress
 spec:
   accessModes:
