@@ -15,7 +15,7 @@ steps:
     connectionType: 'Kubernetes Service Connection'
     kubernetesServiceConnection: 'private connection prod'
     namespace: 'production'
-    command: 'upgrade'
+    command: 'uninstall'
     chartType: 'FilePath'
     chartPath: 'helm/Helm_Charts/Wordpress_Charts'
     releaseName: 'wordpress'
