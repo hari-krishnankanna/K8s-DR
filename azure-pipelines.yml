@@ -42,3 +42,4 @@ steps:
       chartPath: 'helm/Helm_Charts/Wordpress_Charts'
       releaseName: 'wordpress'
       valueFile: 'helm/Helm_Charts/Wordpress_Charts/values.yaml'
+      arguments: '--recreate-pods --force'
