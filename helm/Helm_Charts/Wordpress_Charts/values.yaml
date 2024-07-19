@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: mytestaks.azurecr.io/test
+  repository: exampleacrharitest.azurecr.io/test
   tag: "latest"
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
@@ -104,7 +104,7 @@ mysql:
 
 volume:
   diskName: Wordpressfinal
-  diskURI: /subscriptions/c0812314-9889-42e6-8d45-4b13cfa76c0a/resourceGroups/K8s/providers/Microsoft.Compute/disks/Wordpressfinal
+  diskURI: /subscriptions/c0812314-9889-42e6-8d45-4b13cfa76c0a/resourceGroups/myGroup/providers/Microsoft.Compute/disks/Wordpressfinal
   fsType: ext4
   cachingMode: None
 

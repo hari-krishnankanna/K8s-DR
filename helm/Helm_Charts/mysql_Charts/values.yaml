@@ -75,7 +75,7 @@ persistence:
 azureDisk:
   cachingMode: None
   diskName: Mysqlfinal
-  diskURI: /subscriptions/c0812314-9889-42e6-8d45-4b13cfa76c0a/resourceGroups/K8s/providers/Microsoft.Compute/disks/Mysqlfinal
+  diskURI: /subscriptions/c0812314-9889-42e6-8d45-4b13cfa76c0a/resourceGroups/myGroup/providers/Microsoft.Compute/disks/Mysqlfinal
   kind: Managed
   fsType: ext4
 
