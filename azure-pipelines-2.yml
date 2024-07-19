@@ -7,13 +7,17 @@ trigger:
 - main
 
 pool:
-  vmImage: ubuntu-latest
+   name: myk8s
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- task: HelmDeploy@1
+  inputs:
+    connectionType: 'Kubernetes Service Connection'
+    kubernetesServiceConnection: 'private connection prod'
+    namespace: 'production'
+    command: 'upgrade'
+    chartType: 'FilePath'
+    chartPath: 'helm/Helm_Charts/Wordpress_Charts'
+    releaseName: 'wordpress'
+    valueFile: 'helm/Helm_Charts/Wordpress_Charts/values.yaml'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
