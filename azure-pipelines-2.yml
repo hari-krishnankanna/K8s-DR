@@ -18,5 +18,5 @@ steps:
     kubernetesCluster: 'myAKSCluster'
     namespace: 'production'
     command: 'uninstall'
-    arguments: 'helm uninstall wordpress'
+    arguments: 'wordpress'
 
