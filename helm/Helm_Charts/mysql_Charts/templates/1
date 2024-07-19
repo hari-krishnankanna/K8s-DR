@@ -1,0 +1,36 @@
+# Please edit the object below. Lines beginning with a '#' will be ignored,
+# and an empty file will abort the edit. If an error occurs while saving this file will be
+# reopened with the relevant failures.
+#
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    meta.helm.sh/release-name: mysqlnew
+    meta.helm.sh/release-namespace: default
+  creationTimestamp: "2024-07-02T17:38:07Z"
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  name: mysqlfinal-pvm
+  resourceVersion: "3382784"
+  uid: 70340b67-65e5-4959-88fd-d216aebbbcd2
+spec:
+  accessModes:
+  - ReadWriteOnce
+  azureDisk:
+    cachingMode: None
+    diskName: Mysqlfinal
+    diskURI: /subscriptions/c0812314-9889-42e6-8d45-4b13cfa76c0a/resourceGroups/K8s/providers/Microsoft.Compute/disks/Mysqlfinal
+    fsType: ext4
+    kind: Managed
+    readOnly: false
+  capacity:
+    storage: 4Gi
+  claimRef:
+    name: mysqlfinal-pvc
+    namespace: production
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: default
+  volumeMode: Filesystem
+status:
+  phase: Available

@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysqlfinal-pvm
+spec:
+  capacity:
+    storage: {{ .Values.persistence.size }}
+  storageClassName: {{ .Values.persistence.storageClass }}
+  azureDisk:
+    cachingMode: {{ .Values.azureDisk.cachingMode }}
+    diskName: {{ .Values.azureDisk.diskName }}
+    diskURI: {{ .Values.azureDisk.diskURI }}
+    kind: {{ .Values.azureDisk.kind }}
+    fsType: {{ .Values.azureDisk.fsType }}
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  claimRef:
+    name: mysqlfinal-pvc
+    namespace: production
+

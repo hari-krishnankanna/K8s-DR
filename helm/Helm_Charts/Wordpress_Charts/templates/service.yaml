@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-wordpress
+  namespace: production
+  labels: 
+    app: wordpress
+spec:
+  ports:
+  - port: {{ .Values.service.port }}
+  selector:
+    app: wordpress
+  type: {{ .Values.service.type }}
+

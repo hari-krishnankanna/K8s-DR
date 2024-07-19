@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: worpressfinal-pv
+  namespace: production
+  labels: 
+    app: wordpress
+spec:
+  capacity:
+    storage: {{ .Values.persistence.size }}
+  storageClassName: {{ .Values.persistence.storageClass }}
+  azureDisk:
+    kind: Managed
+    cachingMode: {{ .Values.volume.cachingMode }}
+    diskName: {{ .Values.volume.diskName }}
+    diskURI: {{ .Values.volume.diskURI }}
+    fsType: {{ .Values.volume.fsType }}
+  accessModes:
+  - {{ .Values.persistence.accessMode }}
+  persistentVolumeReclaimPolicy: Retain
+  claimRef:
+    name: worpressfinal-pvc
+    namespace: production
+

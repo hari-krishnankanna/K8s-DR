@@ -1,0 +1,125 @@
+ # Velero for AKS Cross Region Disaster Recovery
+
+ ## Introduction
+ Velero is an open-source tool from VMware designed for backup and disaster recovery of any Kubernetes cluster, including bare metal and cloud-managed services like AWS, Azure, and GCP. It stores its data in object storage services such as Azure Blob Storage, AWS S3, and others. Velero supports various authentication methods and can perform cross-region disaster recovery (DR) and migrations.
+
+ ## Setup Guide
+
+ ### Prerequisites
+ - Azure CLI installed and configured
+ - Access to an Azure account with appropriate permissions
+ - Kubernetes cluster (AKS) set up in both primary and DR regions
+
+ ### 1. Setup Storage Account Resource Group
+
+ ```bash
+ veleroStorageAccount="stvelerotest123"
+ veleroStorageContainer="velero"
+ az group create -n $myResourceGroup --location $myPrimaryLocation
+ ```
+
+ ### 2. Setup Storage Account
+
+ ```bash
+ az storage account create \
+     --name $veleroStorageAccount \
+         --resource-group $myResourceGroup \
+	     --sku Standard_GRS \
+	         --encryption-services blob \
+		     --https-only true \
+		         --kind BlobStorage \
+			     --access-tier Hot
+			     ```
+
+ ### 3. Setup Storage Container
+
+     ```bash
+    az storage container create -n $veleroStorageContainer --public-access off --account-name $veleroStorageAccount
+			     ```
+
+ ## Connecting Velero to Storage
+
+     Velero requires access to the storage account for backups. There are several methods to authenticate:
+
+     - Storage Access Key
+     - Managed Identity
+     - Workload Identity
+
+ ### Using Storage Access Key (Quickest for Testing)
+
+ #### Generate the Secret and Credentials File
+
+     
+ # Get the Storage Account Key for the Velero Blob.
+   VELERO_STORAGE_ACCESS_KEY=$(az storage account keys list --account-name $veleroStorageAccount --resource-group $myResourceGroup --query "[0].value" -o tsv)
+
+ # Add the Storage Account Key to the Credentials File
+     cat << EOF  > ./credentials-velero
+     AZURE_STORAGE_ACCOUNT_ACCESS_KEY=${VELERO_STORAGE_ACCESS_KEY}
+     AZURE_CLOUD_NAME=AzurePublicCloud
+     EOF
+     ```
+
+ ## Velero Installation
+
+ ### 1. Install Velero Client
+
+     ```bash
+    wget https://github.com/vmware-tanzu/velero/releases/download/v1.12.1/velero-v1.12.1-linux-amd64.tar.gz
+     tar -xvf velero-v1.12.1-linux-amd64.tar.gz
+    mv velero-v1.12.1-linux-amd64/velero /usr/local/bin
+
+ # Check Velero version
+     velero version
+    ```
+
+ ### 2. Install Velero Server
+
+     Ensure you are logged into the AKS cluster where Velero needs to be installed.
+
+     ```bash
+     ./velero install \
+         --provider azure \
+     --plugins velero/velero-plugin-for-microsoft-azure:v1.8.1 \
+         --bucket $veleroStorageContainer \
+	     --secret-file ./credentials-velero \
+        --backup-location-config resourceGroup=$myResourceGroup,storageAccount=$veleroStorageAccount,storageAccountKeyEnvVar=AZURE_STORAGE_ACCOUNT_ACCESS_KEY,subscriptionId=$mySubID \
+     --use-volume-snapshots=false
+
+ # Check Velero version
+    velero version
+     ```
+
+ ## Backup and Restore
+
+ ### Create a Backup Schedule
+
+    ```bash
+   velero schedule create "test-schedule" --schedule="0 0-23 * * *" --include-namespaces test --exclude-resources persistentvolumes --ttl 24h0m0s
+   ```
+
+ ### Execute Backup Manually
+
+     ```bash
+    velero backup create --from-schedule test-schedule
+    ```
+
+ ## Restore Process
+
+  To restore backups on a DR cluster, ensure Velero is running on both the primary and DR clusters and uses the same storage account.
+
+ ### List Backups
+
+     ```bash
+     velero get backups
+     ```
+
+ ### Restore Backup
+
+     ```bash
+     velero create restore --from-backup test-schedule-20231109024158
+     ```
+
+     Replace `"test-schedule-20231109024158"` with the actual backup name from the Velero backup list.
+     ---
+

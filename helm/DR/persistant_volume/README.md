@@ -1,0 +1,1 @@
+ The PV (PersistentVolume) and PVC (PersistentVolumeClaim) YAML files are used to mount the volume disk to the application running on DR Cluster. This is done after creating a new disk from the snapshot of the disk used in the primary cluster.
