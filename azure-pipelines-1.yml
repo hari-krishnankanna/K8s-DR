@@ -9,11 +9,4 @@ trigger:
 pool:
   name: myk8s
 
-steps:
-- task: Docker@2
-  inputs:
-    containerRegistry: 'acr'
-    repository: 'test'
-    command: 'buildAndPush'
-    Dockerfile: '**/Dockerfile'
 

@@ -2,14 +2,13 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
+replicaCount: 3
 
 image:
   repository: exampleacrharitest.azurecr.io/test
   tag: "latest"
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  
 
 imagePullSecrets: []
 nameOverride: ""
@@ -32,7 +31,7 @@ podLabels: {}
 podSecurityContext: {}
   # fsGroup: 2000
 
-#securityContext:
+# securityContext:
   # capabilities:
   #   drop:
   #   - ALL
@@ -60,7 +59,7 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources: 
+resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -73,13 +72,14 @@ resources:
     memory: 300Mi
 
 livenessProbe:
-httpGet:
-     path: /
-     port: 80
+  httpGet:
+    path: /
+    port: 80
+
 readinessProbe:
- httpGet:
-   path: /
-   port: 80
+  httpGet:
+    path: /
+    port: 80
 
 autoscaling:
   enabled: true
@@ -87,12 +87,12 @@ autoscaling:
   maxReplicas: 2
   targetCPUUtilizationPercentage: 50
   # targetMemoryUtilizationPercentage: 80
+
 persistence:
   enabled: true
   storageClass: "default"
   accessMode: ReadWriteOnce
   size: 4Gi
-
 
 mysql:
   host: wordpress-mysql
@@ -101,7 +101,6 @@ mysql:
   secretKey: password
   secretValue: "hari123#"
 
-
 volume:
   diskName: Wordpressfinal
   diskURI: /subscriptions/c0812314-9889-42e6-8d45-4b13cfa76c0a/resourceGroups/myGroup/providers/Microsoft.Compute/disks/Wordpressfinal
@@ -109,7 +108,7 @@ volume:
   cachingMode: None
 
 # Additional volumes on the output Deployment definition.
-#volumes: []
+# volumes: []
 # - name: foo
 #   secret:
 #     secretName: mysecret
