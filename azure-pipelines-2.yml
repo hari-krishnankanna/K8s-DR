@@ -12,12 +12,11 @@ pool:
 steps:
 - task: HelmDeploy@1
   inputs:
-    connectionType: 'Kubernetes Service Connection'
-    kubernetesServiceConnection: 'private connection prod'
+    connectionType: 'Azure Resource Manager'
+    azureSubscription: 'myGroupserviceconn'
+    azureResourceGroup: 'myGroup'
+    kubernetesCluster: 'myAKSCluster'
     namespace: 'production'
     command: 'uninstall'
-    chartType: 'FilePath'
-    chartPath: 'helm/Helm_Charts/Wordpress_Charts'
-    releaseName: 'wordpress'
-    valueFile: 'helm/Helm_Charts/Wordpress_Charts/values.yaml'
+    arguments: 'helm uninstall wordpress'
 
