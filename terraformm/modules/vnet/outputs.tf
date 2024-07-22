@@ -9,3 +9,6 @@ output "aks_subnet_id" {
 output "acr_subnet_id" {
   value = azurerm_subnet.acr_subnet.id
 }
+output "storage_subnet_id" {
+  value = azurerm_subnet.acr_subnet.id
+}

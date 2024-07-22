@@ -29,4 +29,9 @@ variable "acr_subnet_name" {
 variable "acr_subnet_prefix" {
   type = string
 }
-
+variable "storage_subnet_prefix" {
+  type = string
+}
+variable "storage_subnet_name" {
+  type = string
+}

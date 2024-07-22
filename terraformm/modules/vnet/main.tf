@@ -18,6 +18,13 @@ resource "azurerm_subnet" "acr_subnet" {
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = [var.acr_subnet_prefix]
 }
+
+resource "azurerm_subnet" "storage_subnet" {
+  name                 = var.storage_subnet_name
+  resource_group_name  = var.resource_group_name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = [var.storage_subnet_prefix]
+}
 # delegation {
  #   name = "example-delegation"
 
