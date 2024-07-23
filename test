@@ -1,1 +1,159 @@
-Hello
+This is a Terraform template that setting up the Below components in the Prod and DR Environments.
+
+     
+
+- Compute:-  
+  - [ ] bastion-vms
+  
+- Network:-  
+ 
+- [ ] Virtual network,
+ 
+- [ ] Subnet, 
+ 
+- [ ] private DNS zone, 
+ - [ ] Private links,
+
+- Storage: - 
+- [ ] Azure Disk 
+ - [ ] Storage account
+
+- Containers:- 
+
+- [ ] ACR 
+ - [ ] AKS
+
+
+**_Procedure_**
+
+
+1. Deploy Azure private AKS infrastructure using Terraform
+Here, we're using Terraform to build the private aks cluster, Virtual networks, private ACR with private links, Bastion and self-hosted agent, and Azure storage account with private links.
+
+     We have Two Environments in two different regions one as prod and one as Disaster recovery both are built using the terraform and both the AKS    clusters use the same ACR repo and storage account.
+
+   1.2 Terraform Execution: Infrastructure Resources Provisioning
+    Once you have finished declaring the resources, you can deploy all resources.
+    terraform init: command is used to initialize a working directory containing Terraform configuration files.
+
+    terraform plan: The command creates an execution plan, which lets you preview the changes that Terraform plans to make to your infrastructure. 
+
+    terraform apply: command executes the actions proposed in a Terraform plan to create or update infrastructure.
+
+    Both the prod and DR environments use Different backends that store the state file in the Azure storage account,
+
+    The terraform deployment is performed from a bastion server with has necessary permission to the Azure CLI.
+
+
+    After the deployment of both environments, the next step is to build and deploy the application to the AKS cluster, since our cluster and repo  are private we need to access the same through the bastion server we have created before and we are using the Azure DevOps pipeline to deploy the application, since we are using  private cluster we can’t use the agents provided by the Azure DevOps so we need to create self-hosted agents,
+
+2. Configuring the self-hosted Linux azure agents
+   Here , We are using the bastion server as the self-hosted agent, however, if you need  we create a new server same as the bastion and use it as  the self-hosted agent
+
+    2.1
+     Creating a Personal Access Token (PAT)
+     The first step before setting up an agent is to create a personal access token which will be used to connect the agent to the Azure Pipeline.  Login to Azure DevOps organization, open user settings, and select “Personal access tokens” In the Personal Access Tokens screen, click on “New  Token” to create a token. Provide a name, expiration date, and the necessary permissions and click on Create to create the PAT.
+    NOTE : “Ensure that all the correct permissions are granted. Otherwise, you will not be able to initialize the connection. If required, you can  configure the agent to have Full access to Azure DevOps.”
+    Once the token is generated, securely store it as it will not be accessible later.
+
+2.2 Creating a New Agent Pool
+    Go to https://dev.azure.com and navigate to your organization , consider creating an agent pool. Access Organization settings > Agent Pools
+    Choose Agent Pools, Add Pool, Select "New," then Choose Self-Hosted, and Finally Give the Agent Pool a Name.
+
+2.3 Download the Agent Package
+    In case you created a new agent pool, ensure you choose it from the list. Click “New agent” to initiate the agent installation. SSH to the EC2  that was provision for the runner is necessary first.
+
+2.4 SSH to Bastion server
+    Login to the bastion server with password.
+
+2.5 Configuring the Self-Hosted Agent
+   Download the agent in the bastion machine by using curl command .Click the copy button for copy the url for the agent and download with Curl    command. After downloading the agent configuration file ,Create a folder and extract the downloaded tar.gz file. Start the agent configuration by running the following command.
+
+    ./config.sh
+
+   While performing the above command, it will be required to enter configuration details such as: Server URL (Azure organizational URL) Authentication type (Here, we have used the previously created authentication token) Agent details, including agent-pool , agent name and the workspace folder configuration .After that we will get an prompt that successfully added the agent .We can validate the changes on the azure devops console agent pool section of the respective project settings
+   We need to run the agent as a systemd service in the operating system perform the command below , the command performs a script with ubuntu user
+
+    sudo ./svc.sh install ubuntu
+
+This command creates a service file that points to ./runsvc.sh. This script sets up the environment (more details below) and starts the agents' host.
+    Create a systemd service fo the script so that the agent will be online every time..
+    Navigate back to the Agent pools in the Organizational settings and then to the Created pool of the Agents tab to verify that the new agent is  listed as a self-hosted agent.
+    The bastion instance were configured . Next, in order to successfully complete our use case, we must build a CICD pipeline.
+
+3. Initial project service setup for pipeline
+    For the purposes of our CI/CD (Continuous Integration/Continuous Deployment) workflows, we must make a connection for both the Kubernetes services and the Acr regisrty. And have configure
+
+3.1 Set up an ACR registry in project settings
+    Here we add service connection to the docker registry 
+    Click Project Settings - There should be a gear icon in down left corner on a web page.
+
+
+    Click Service connections -In the middle of the page in Pipeline settings section.
+
+
+    Click New service connection button - in upper right corner
+
+
+    Select Docker Registry - click next
+
+
+    Choose ACR registry option as registry type.
+
+
+    Authenticate through service principle.
+
+
+3.2 Set up a Kubernetes service connection (AKS)
+    For cluster configuration , next we need to add the cluster service connection in the project setting
+    Click Project Settings - There should be a gear icon in down left corner on a web page.
+
+
+    Click Service connections -In the middle of the page in Pipeline settings section.
+
+
+    Click New service connection button - in upper right corner
+
+
+    Select Kubernetes - click next
+
+
+    Choose service connection option as the authentication method choose kubeconfig add the kubeconfig details and at the end choose not validate and save option.
+
+4. Configure CICD Pipeline for EKS
+    Go to organization and select pipeline in the section and create a new pipeline
+    After that select repository that stored source code , choose the starter pipeline ,
+    Add our self-hosted agent pool name details and from the show assistance section choose docker build and push then select the service connection details then click on add .
+    This task will build and push the images to ACR repo
+
+
+    The next step is to deploy the application using Helm in the same pipeline from the show assistance section choose Package and deploy Helm charts this task is used to deploy the application to the cluster select the chat path and values files as well as the AKS cluster details. Then click on add.
+
+    The pipeline script was stored in the git repo,
+
+
+    After completing the pipeline build and deployment make sure the changes are reflected in the cluster, login to the cluster and test the application.
+    We exposed service as  Load balancer in helm Chart, so we can access the application through the loadbalancer IP
+
+    kubectl get svc
+
+    Copy the Load balancer IP and browse it on the web to test the application.
+
+**_Disaster management_**
+
+   For the disaster recovery, we have created a DR cluster the same as the prod cluster in a different region.and for the backup and recovery method we have implemented velero for the cluster backups. it is an open-source tool to backup and restore Kubernetes cluster resources and persistent volumes. Velero allows you to take snapshots of your entire cluster or specific namespaces, which can be used for disaster recovery. 
+   In our project we are running a wordpress application so as its a statefull application for the data recovery i have implemented to use the 
+   Persistent Storage using Azure Disks - The data for both WordPress and MySQL (which is used as the database for WordPress) is stored on Azure   Disks. Azure Disks are durable, high-performance block storage designed to be used with Azure Virtual Machines. In this case, they are used as persistent storage in your Kubernetes cluster to ensure that the data is stored reliably and remains available even if the pod (a unit of deployment in Kubernetes) gets restarted or rescheduled.
+
+   Also, we have implemented automated azure disk snapshots, so that we can use snapshots during DR.
+
+   Recovery method:- If anything went wrong with the primary cluster we can use the velero backup avaible in the storage account to restore the primary cluster details in the DR cluster however we can't restore volumes using the velero so that we need to utilize the disk snapshot and creae a new disk after that we can restore the same to DR cluster by creating a pv and pvc yamal pointing to the correspoding resources which is using the Disk.
+
+
+
+
+
+
+
+
+
