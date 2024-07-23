@@ -3,10 +3,43 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
+#this pipeline will be trigger to run by master branch of github repo. 
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+# This pipeline will be triggered to run by the main branch of the GitHub repo.
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+# This pipeline will be triggered to run by the main branch of the GitHub repo.
 trigger:
-- main
+  - main
 
 pool:
   name: myk8s
 
+steps:
+  - checkout: self
 
+  - task: Docker@2
+    inputs:
+      containerRegistry: 'acrnew'
+      repository: 'test'
+      command: 'buildAndPush'
+      Dockerfile: 'Dockerfile'
+
+  - task: HelmDeploy@1
+    inputs:
+      connectionType: 'Kubernetes Service Connection'
+      kubernetesServiceConnection: 'private connection prod'
+      namespace: 'production'
+      command: 'upgrade'
+      chartType: 'FilePath'
+      chartPath: 'helm/Helm_Charts/Wordpress_Charts'
+      releaseName: 'wordpress'
+      valueFile: 'helm/Helm_Charts/Wordpress_Charts/values.yaml'
+      arguments: '--recreate-pods'
