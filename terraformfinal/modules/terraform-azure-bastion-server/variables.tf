@@ -7,7 +7,7 @@ variable "location" {
 }
 
 #variable "vnet_id" {
- # type = string
+# type = string
 #}
 
 variable "acr_subnet_id" {
@@ -16,10 +16,10 @@ variable "acr_subnet_id" {
 variable "vm_name" {
   type = string
 }
-variable "networkinterface_name"{
-type = string
+variable "networkinterface_name" {
+  type = string
 }
-variable "pubip_name"{
-type = string
+variable "pubip_name" {
+  type = string
 }
 

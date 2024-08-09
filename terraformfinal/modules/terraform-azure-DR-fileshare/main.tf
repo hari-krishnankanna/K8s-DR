@@ -1,7 +1,7 @@
 
 
 data "azurerm_resource_group" "main" {
- name =  var.acr_resource_group_name
+  name = var.acr_resource_group_name
 }
 
 data "azurerm_storage_account" "storagefile" {
@@ -10,9 +10,9 @@ data "azurerm_storage_account" "storagefile" {
 }
 
 data "azurerm_storage_share" "fileshare" {
- name = var.fileshare_name
- storage_account_name = var.storagefile_name
-#resource_group_name = var.acr_resource_group_name
+  name                 = var.fileshare_name
+  storage_account_name = var.storagefile_name
+  #resource_group_name = var.acr_resource_group_name
 }
 
 resource "azurerm_private_dns_zone" "fileshare_zone_DR" {
@@ -39,10 +39,10 @@ resource "azurerm_private_endpoint" "private_endpoint_files_DR" {
     subresource_names              = ["file"]
     is_manual_connection           = false
   }
-private_dns_zone_group {
+  private_dns_zone_group {
     name                 = var.zone_group_files_DR_name
     private_dns_zone_ids = [azurerm_private_dns_zone.fileshare_zone_DR.id]
-}
+  }
 }
 
 resource "azurerm_private_dns_a_record" "dnsrecord_files_DR" {

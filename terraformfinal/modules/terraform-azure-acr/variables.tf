@@ -20,20 +20,20 @@ variable "retention_days" {
   default     = 7
 }
 variable "acr_virtual_network_link_name" {
-type = string
+  type = string
 }
 variable "acrprod_name" {
-type = string
+  type = string
 }
 variable "prodacr_service_connection_name" {
-type = string
+  type = string
 }
 variable "private_endpoint_prod_acr_name" {
-type = string
+  type = string
 }
 variable "private_dns_zone_groupacr_name" {
-type = string
+  type = string
 }
 variable "private_dns_a_record_acr_name" {
-type = string
+  type = string
 }

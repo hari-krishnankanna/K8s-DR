@@ -1,5 +1,5 @@
 data "azurerm_resource_group" "main" {
-  name =  var.acr_resource_group_name
+  name = var.acr_resource_group_name
 }
 data "azurerm_container_registry" "acrprod" {
   name                = var.acr_name
@@ -29,11 +29,11 @@ resource "azurerm_private_endpoint" "private_endpoint_prod_acr_dr" {
     private_connection_resource_id = data.azurerm_container_registry.acrprod.id
     is_manual_connection           = false
     subresource_names              = ["registry"]
-}
- private_dns_zone_group {
+  }
+  private_dns_zone_group {
     name                 = var.private_dns_zone_groupacr_dr_name
     private_dns_zone_ids = [azurerm_private_dns_zone.dns_zone_acr_dr.id]
-   }
+  }
 
 }
 resource "azurerm_private_dns_a_record" "dns_a_record_acr_dr" {

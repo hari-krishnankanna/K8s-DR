@@ -66,50 +66,51 @@ variable "vm_name" {
   type = string
 }
 
-variable "networkinterface_name"{
+variable "networkinterface_name" {
   type = string
 }
 
-variable "pubip_name"{
+variable "pubip_name" {
   type = string
- }
+}
 
 variable "acr_virtual_network_link_name" {
-type = string
+  type = string
 }
 variable "acrprod_name" {
-type = string
+  type = string
 }
 variable "prodacr_service_connection_name" {
-type = string
+  type = string
 }
 variable "private_endpoint_prod_acr_name" {
-type = string
+  type = string
 }
 variable "private_dns_zone_groupacr_name" {
-type = string
+  type = string
 }
 variable "private_dns_a_record_acr_name" {
-type = string
+  type = string
 }
 
 variable "storagefile_name" {
   type = string
 }
 variable "fileshare_name" {
-type = string
+  type = string
 }
 
-variable "virtuallink_files_name"{
-type = string
+variable "virtuallink_files_name" {
+  type = string
 }
 
-variable "private_endpoint_files_name"{
-type = string
+variable "private_endpoint_files_name" {
+  type = string
 }
 variable "service_connection_file_name" {
-type = string
+  type = string
 }
+
 variable "zone_group_files_name" {
-type = string
+  type = string
 }

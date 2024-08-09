@@ -1,7 +1,7 @@
 resource "azurerm_storage_account" "storagefile" {
   name                     = var.storagefile_name
-  resource_group_name      =  var.resource_group_name  
-  location                 =  var.location 
+  resource_group_name      = var.resource_group_name
+  location                 = var.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
 }
@@ -9,7 +9,7 @@ resource "azurerm_storage_account" "storagefile" {
 resource "azurerm_storage_share" "fileshare" {
   name                 = var.fileshare_name
   storage_account_name = azurerm_storage_account.storagefile.name
-  quota                =  100
+  quota                = 100
 }
 
 resource "azurerm_private_dns_zone" "fileshare_zone" {
@@ -36,10 +36,10 @@ resource "azurerm_private_endpoint" "private_endpoint_files" {
     subresource_names              = ["file"]
     is_manual_connection           = false
   }
-private_dns_zone_group {
+  private_dns_zone_group {
     name                 = var.zone_group_files_name
     private_dns_zone_ids = [azurerm_private_dns_zone.fileshare_zone.id]
-}
+  }
 }
 
 resource "azurerm_private_dns_a_record" "dnsrecord_files" {

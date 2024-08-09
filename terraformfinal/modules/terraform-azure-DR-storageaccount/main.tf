@@ -1,5 +1,5 @@
 data "azurerm_resource_group" "main" {
- name =  var.acr_resource_group_name
+  name = var.acr_resource_group_name
 }
 
 data "azurerm_storage_account" "prod" {
@@ -12,7 +12,7 @@ resource "azurerm_private_dns_zone" "storage_dr" {
 }
 resource "azurerm_private_endpoint" "storage_dr" {
   name                = var.private_endpoint_storage_dr_name
-  location            = var.location #azurerm_resource_group.example.location
+  location            = var.location            #azurerm_resource_group.example.location
   resource_group_name = var.resource_group_name #azurerm_resource_group.example.name
   subnet_id           = var.storage_subnet_id
 
@@ -22,15 +22,15 @@ resource "azurerm_private_endpoint" "storage_dr" {
     subresource_names              = ["blob"]
     is_manual_connection           = false
   }
-private_dns_zone_group {
+  private_dns_zone_group {
     name                 = var.storage_dns_zonegrp_name
     private_dns_zone_ids = [azurerm_private_dns_zone.storage_dr.id]
-   }
+  }
 }
 
 #resource "azurerm_private_dns_zone" "storage_dr" {
- # name                = "privatelink.blob.core.windows.net"
- # resource_group_name = var.resource_group_name #azurerm_resource_group.example.name
+# name                = "privatelink.blob.core.windows.net"
+# resource_group_name = var.resource_group_name #azurerm_resource_group.example.name
 #}
 
 resource "azurerm_private_dns_zone_virtual_network_link" "storage_dr" {

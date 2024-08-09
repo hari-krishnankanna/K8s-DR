@@ -1,4 +1,4 @@
- resource "azurerm_virtual_network" "vnet" {
+resource "azurerm_virtual_network" "vnet" {
   name                = var.vnet_name
   address_space       = var.address_space
   location            = var.location
@@ -26,9 +26,9 @@ resource "azurerm_subnet" "storage_subnet" {
   address_prefixes     = [var.storage_subnet_prefix]
 }
 #resource "azurerm_network_security_group" "aks_nsg" {
- # name                = "${var.aks_subnet_name}-nsg"
- # location            = var.location
- # resource_group_name = var.resource_group_name
+# name                = "${var.aks_subnet_name}-nsg"
+# location            = var.location
+# resource_group_name = var.resource_group_name
 #}
 
 resource "azurerm_network_security_group" "acr_nsg" {

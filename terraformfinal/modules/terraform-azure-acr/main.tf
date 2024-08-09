@@ -11,39 +11,39 @@ resource "azurerm_private_dns_zone_virtual_network_link" "dns_link_acr" {
 }
 
 resource "azurerm_container_registry" "acrprod" {
-  name                     = var.acrprod_name
-  resource_group_name      = var.resource_group_name
-  location                 = var.location
-  sku                      = "Premium"
-  admin_enabled            = false
+  name                = var.acrprod_name
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  sku                 = "Premium"
+  admin_enabled       = false
   #zone_redundancy          = "Enabled"
   public_network_access_enabled = false
-network_rule_set {
+  network_rule_set {
     default_action = "Deny"
   }
 
-georeplications {
+  georeplications {
     location = "West US"
     #zone_redundancy   = "Enabled"
-}
-retention_policy {
- enabled = true
- days    = var.retention_days
+  }
+  retention_policy {
+    enabled = true
+    days    = var.retention_days
   }
 }
 
 #resource "azurerm_container_registry_replication" "replication_eastus" {
- # name                     = "eastus-replication"
- # resource_group_name      = var.resource_group_name
- # registry_name            = azurerm_container_registry.acr.name
- # location                 = "East US"
+# name                     = "eastus-replication"
+# resource_group_name      = var.resource_group_name
+# registry_name            = azurerm_container_registry.acr.name
+# location                 = "East US"
 #}
 
 #resource "azurerm_container_registry_replication" "replication_westus" {
- # name                     = "westus-replication"
- # resource_group_name      = var.resource_group_name
- # registry_name            = azurerm_container_registry.acr.name
- # location                 = "West US"
+# name                     = "westus-replication"
+# resource_group_name      = var.resource_group_name
+# registry_name            = azurerm_container_registry.acr.name
+# location                 = "West US"
 #}
 
 
@@ -58,11 +58,11 @@ resource "azurerm_private_endpoint" "private_endpoint_prod_acr" {
     private_connection_resource_id = azurerm_container_registry.acrprod.id
     is_manual_connection           = false
     subresource_names              = ["registry"]
-}
- private_dns_zone_group {
+  }
+  private_dns_zone_group {
     name                 = var.private_dns_zone_groupacr_name
     private_dns_zone_ids = [azurerm_private_dns_zone.dns_zone_acr.id]
-   }
+  }
 
 }
 resource "azurerm_private_dns_a_record" "dns_a_record_acr" {

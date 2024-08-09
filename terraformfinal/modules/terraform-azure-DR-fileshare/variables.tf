@@ -17,24 +17,24 @@ variable "storagefile_name" {
   type = string
 }
 variable "fileshare_name" {
-type = string
+  type = string
 }
 
-variable "virtuallink_files_DR_name"{
-type = string
+variable "virtuallink_files_DR_name" {
+  type = string
 }
 
-variable "private_endpoint_files_DR_name"{
-type = string
+variable "private_endpoint_files_DR_name" {
+  type = string
 }
 variable "service_connection_file_DR_name" {
-type = string
+  type = string
 }
 variable "zone_group_files_DR_name" {
-type = string
+  type = string
 }
 variable "private_dnsfiles_DR_name" {
-type = string
+  type = string
 }
 #variable "fileshare_name" {
 #type = string
@@ -43,6 +43,6 @@ type = string
 #type = string
 #}
 variable "acr_resource_group_name" {
-type = string
+  type = string
 }
 

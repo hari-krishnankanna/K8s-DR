@@ -1,19 +1,19 @@
- resource "azurerm_storage_account" "prod" {
+resource "azurerm_storage_account" "prod" {
   name                     = "productionanddrvelero"
   resource_group_name      = var.resource_group_name # azurerm_resource_group.example.name
-  location                 = var.location #azurerm_resource_group.example.location
+  location                 = var.location            #azurerm_resource_group.example.location
   account_tier             = "Standard"
   account_replication_type = "GRS"
- #allow_blob_public_access = "Disabled"
+  #allow_blob_public_access = "Disabled"
   #account_replication_type = "GRS"
-blob_properties {
+  blob_properties {
     delete_retention_policy {
       days = 7
-}
-}
-public_network_access_enabled = false
-allow_nested_items_to_be_public = false
-min_tls_version          = "TLS1_2"
+    }
+  }
+  public_network_access_enabled   = false
+  allow_nested_items_to_be_public = false
+  min_tls_version                 = "TLS1_2"
 }
 resource "azurerm_private_dns_zone" "storage" {
   name                = "privatelink.blob.core.windows.net"
@@ -21,7 +21,7 @@ resource "azurerm_private_dns_zone" "storage" {
 }
 resource "azurerm_private_endpoint" "storage" {
   name                = "storage-private-endpoint"
-  location            = var.location #azurerm_resource_group.example.location
+  location            = var.location            #azurerm_resource_group.example.location
   resource_group_name = var.resource_group_name #azurerm_resource_group.example.name
   subnet_id           = var.storage_subnet_id
 
@@ -31,15 +31,15 @@ resource "azurerm_private_endpoint" "storage" {
     subresource_names              = ["blob"]
     is_manual_connection           = false
   }
-private_dns_zone_group {
+  private_dns_zone_group {
     name                 = "storage-dns-zone-group"
     private_dns_zone_ids = [azurerm_private_dns_zone.storage.id]
-   }
+  }
 }
 
 #resource "azurerm_private_dns_zone" "storage" {
- # name                = "privatelink.blob.core.windows.net"
- # resource_group_name = var.resource_group_name #azurerm_resource_group.example.name
+# name                = "privatelink.blob.core.windows.net"
+# resource_group_name = var.resource_group_name #azurerm_resource_group.example.name
 #}
 
 resource "azurerm_private_dns_zone_virtual_network_link" "storage" {
